@@ -64,6 +64,18 @@ var HelloWorldLayer = cc.Layer.extend({
                 cc.tintTo(2.5,255,125,0)
             )
         );
+
+        var batch = cc.SpriteBatchNode.create(res.Dice_jpg, 36);
+        var sprite = cc.Sprite.createWithTexture(batch.getTexture(), cc.rect(0, 0, 64, 64));
+        batch.addChild(sprite);
+
+        /*this.diceSprite = new cc.Sprite(res.Dice_jpg);*/
+        batch.attr({
+            x: 400,
+            y: 200
+        });
+        this.addChild(batch, 2);
+
         return true;
     }
 });
