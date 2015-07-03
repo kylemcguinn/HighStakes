@@ -67,48 +67,12 @@ var HelloWorldLayer = cc.Layer.extend({
             )
         );
 
-        /*var batch = cc.SpriteBatchNode.create(res.Dice_jpg, 36);
-        var sprite = cc.Sprite.createWithTexture(batch.getTexture(), cc.rect(0, 0, 63, 63));
-        batch.addChild(sprite);
-
-        batch.attr({
-            x: 400,
-            y: 200
-        });
-        this.addChild(batch, 2);*/
-
-        var num = 4;
-
-        cc.spriteFrameCache.addSpriteFrames(res.Dice_plist);
         this.spriteSheet = new cc.SpriteBatchNode(res.Dice_png);
         this.addChild(this.spriteSheet);
 
-        var animFrames = [];
-        for (var i = 1; i < 7; i++) {
-            var str = "dice" + i + ".png";
-            var frame = cc.spriteFrameCache.getSpriteFrame(str);
-            animFrames.push(frame);
-        }
+        var dice = Dice.getDice(this.spriteSheet);
 
-        var animation = new cc.Animation(animFrames,0.2);
-        var action1 = new cc.Repeat(new cc.Animate(animation), 1);
-
-        animFrames = [];
-        for (i = 1; i < num; i++) {
-            str = "dice" + i + ".png";
-            frame = cc.spriteFrameCache.getSpriteFrame(str);
-            animFrames.push(frame);
-        }
-
-        animation = new cc.Animation(animFrames,0.2);
-        var action2 = new cc.Repeat(new cc.Animate(animation), 1);
-
-        this.dice = new cc.Sprite("#dice1.png");
-        this.dice.attr({x:400, y:200});
-
-        this.dice.runAction(cc.sequence(action1, action2));
-
-        this.spriteSheet.addChild(this.dice);
+        this.spriteSheet.addChild(dice);
 
         return true;
     }
