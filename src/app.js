@@ -1,7 +1,6 @@
 
 var HelloWorldLayer = cc.Layer.extend({
     sprite:null,
-    dice:null,
     spriteSheet:null,
     ctor:function () {
         //////////////////////////////
@@ -71,7 +70,7 @@ var HelloWorldLayer = cc.Layer.extend({
         this.addChild(this.spriteSheet);
 
         var dice = Dice.getDice(this.spriteSheet);
-
+        dice.attr({x: 400, y: 200});
         this.spriteSheet.addChild(dice);
 
         return true;

@@ -25,7 +25,6 @@ var Dice = {
         var action2 = new cc.Repeat(new cc.Animate(animation), 1);
 
         this.dice = new cc.Sprite("#dice1.png");
-        this.dice.attr({x: 400, y: 200});
         this.dice.runAction(cc.sequence(action1, action2));
 
         return this.dice;
