@@ -2,7 +2,9 @@ var res = {
     HelloWorld_png : "res/HelloWorld.png",
     CloseNormal_png : "res/CloseNormal.png",
     CloseSelected_png : "res/CloseSelected.png",
-    Dice_jpg : "res/images/dice.jpg"
+    Dice_jpg : "res/images/dice.jpg",
+    Dice_png : "res/images/dice.png",
+    Dice_plist: "res/images/dice.plist"
 };
 
 var g_resources = [];
