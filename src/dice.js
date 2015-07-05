@@ -8,7 +8,7 @@ var Dice = {
             // When "swallow touches" is true, then returning 'true' from the onTouchBegan method will "swallow" the touch event, preventing other listeners from using it.
             swallowTouches: true,
             //onTouchBegan event callback function
-            onTouchBegan: function (touch, event) {
+            onTouchBegan: function () {
 
                 var diceRoll = Math.floor((Math.random() * 6) + 1);
                 var repeat = Math.floor((Math.random() * 5) + 3);
@@ -38,16 +38,16 @@ var Dice = {
                 return false;
             },
             //Trigger when moving touch
-            onTouchMoved: function (touch, event) {
-                var target = event.getCurrentTarget();
-
+            onTouchMoved: function () {
                 return false;
             },
             //Process the touch end event
-            onTouchEnded: function (touch, event) {
-                var target = event.getCurrentTarget();
+            onTouchEnded: function () {
+
             }
         });
+
+        alert("HEY!");
 
         cc.eventManager.addListener(listener1, dice);
 
