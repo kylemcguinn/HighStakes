@@ -7,71 +7,76 @@ var HelloWorldLayer = cc.Layer.extend({
         // 1. super init first
         this._super();
 
-        /////////////////////////////
-        // 2. add a menu item with "X" image, which is clicked to quit the program
-        //    you may modify it.
         // ask the window size
         var size = cc.winSize;
 
-        // add a "close" icon to exit the progress. it's an autorelease object
-        var closeItem = new cc.MenuItemImage(
-            res.CloseNormal_png,
-            res.CloseSelected_png,
+        var dice_x = 450;
+        var diceSpace = 75;
+
+        var dice = [];
+
+        var addDice = new cc.MenuItemImage(
+            res.PlusButton_png,
+            res.PlusButton_png,
             function () {
-                cc.log("Menu is clicked!");
+                if (dice.length < 5) {
+                    dice_x += diceSpace;
+                    this.addDice(dice_x, 400);
+                }
             }, this);
-        closeItem.attr({
-            x: size.width - 20,
-            y: 20,
+        addDice.attr({
+            x: size.width - 40,
+            y: 40,
+            scale:.5,
             anchorX: 0.5,
             anchorY: 0.5
         });
 
-        var menu = new cc.Menu(closeItem);
+        var removeDice = new cc.MenuItemImage(
+            res.Minus_png,
+            res.Minus_png,
+            function () {
+                var die = dice.pop();
+                if(die) {
+                    this.spriteSheet.removeChild(die);
+                    dice_x -= diceSpace;
+                }
+            }, this);
+        removeDice .attr({
+            x: size.width - 150,
+            y: 40,
+            scale:.5,
+            anchorX: 0.5,
+            anchorY: 0.5
+        });
+
+        var menu = new cc.Menu(addDice,removeDice);
         menu.x = 0;
         menu.y = 0;
         this.addChild(menu, 1);
 
-        /////////////////////////////
-        // 3. add your codes below...
-        // add a label shows "Hello World"
-        // create and initialize a label
-        var helloLabel = new cc.LabelTTF("Hello World", "Arial", 38);
-        // position the label on the center of the screen
-        helloLabel.x = size.width / 2;
-        helloLabel.y = 0;
-        // add the label as a child to this layer
-        this.addChild(helloLabel, 5);
 
-        // add "HelloWorld" splash screen"
-        this.sprite = new cc.Sprite(res.HelloWorld_png);
+        // add dice background"
+        this.sprite = new cc.Sprite(res.Dice_background);
         this.sprite.attr({
             x: size.width / 2,
             y: size.height / 2,
-            scale: 0.5,
-            rotation: 180
+            scale: 0.5
         });
         this.addChild(this.sprite, 0);
 
-        this.sprite.runAction(
-            cc.sequence(
-                cc.rotateTo(2, 0),
-                cc.scaleTo(2, 1, 1)
-            )
-        );
-        helloLabel.runAction(
-            cc.spawn(
-                cc.moveBy(2.5, cc.p(0, size.height - 40)),
-                cc.tintTo(2.5,255,125,0)
-            )
-        );
-
+        // add sprite sheet for rendering the dice sprites
         this.spriteSheet = new cc.SpriteBatchNode(res.Dice_png);
-        this.addChild(this.spriteSheet);
+        this.addChild(this.spriteSheet, 0);
 
-        var dice = Dice.getDice(this.spriteSheet);
-        dice.attr({x: 400, y: 200});
-        this.spriteSheet.addChild(dice);
+        this.addDice = function(x, y) {
+            var newDie = Dice.getDice(this.spriteSheet);
+            newDie.attr({x: x, y: y});
+            dice.push(newDie);
+            this.spriteSheet.addChild(newDie);
+        };
+
+        this.addDice(dice_x, 400);
 
         return true;
     }
