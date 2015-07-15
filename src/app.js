@@ -67,6 +67,9 @@ var HelloWorldLayer = cc.Layer.extend({
 
         // add sprite sheet for rendering the dice sprites
         this.spriteSheet = new cc.SpriteBatchNode(res.Dice_png);
+        this.spriteSheet.attr({
+
+        });
         this.addChild(this.spriteSheet, 0);
 
         this.addDice = function(x, y) {
@@ -77,6 +80,20 @@ var HelloWorldLayer = cc.Layer.extend({
         };
 
         this.addDice(dice_x, 400);
+
+        var someSprite = new cc.Sprite(res.RollDice_png);
+        someSprite.attr({
+            x: 200,
+            y: 100,
+            scale:.5
+        });
+
+        SpriteUtility.setTouchListener(someSprite, function(){
+            var event = new cc.EventCustom("game_roll_dice");
+            cc.eventManager.dispatchEvent(event);
+        });
+
+        this.addChild(someSprite, 5);
 
         return true;
     }
