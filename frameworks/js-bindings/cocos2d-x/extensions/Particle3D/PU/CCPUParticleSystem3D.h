@@ -359,6 +359,9 @@ CC_CONSTRUCTOR_ACCESS:
     
     bool initSystem(const std::string &filePath);
 
+    bool initWithFilePath(const std::string &filePath);
+    bool initWithFilePathAndMaterialPath (const std::string &filePath, const std::string &materialPath);
+
 protected:
 
     void prepared();

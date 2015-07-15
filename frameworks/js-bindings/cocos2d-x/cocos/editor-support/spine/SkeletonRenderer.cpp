@@ -75,7 +75,6 @@ void SkeletonRenderer::initialize () {
 	setOpacityModifyRGB(true);
 
 	setGLProgram(ShaderCache::getInstance()->getGLProgram(GLProgram::SHADER_NAME_POSITION_TEXTURE_COLOR));
-	scheduleUpdate();
 }
 
 void SkeletonRenderer::setSkeletonData (spSkeletonData *skeletonData, bool ownsSkeletonData) {
@@ -85,59 +84,60 @@ void SkeletonRenderer::setSkeletonData (spSkeletonData *skeletonData, bool ownsS
 
 SkeletonRenderer::SkeletonRenderer () {
 }
-    
+
 SkeletonRenderer::SkeletonRenderer (spSkeletonData *skeletonData, bool ownsSkeletonData) {
-    initWithData(skeletonData, ownsSkeletonData);
+	initWithData(skeletonData, ownsSkeletonData);
 }
 
 SkeletonRenderer::SkeletonRenderer (const std::string& skeletonDataFile, spAtlas* atlas, float scale) {
-    initWithFile(skeletonDataFile, atlas, scale);
+	initWithFile(skeletonDataFile, atlas, scale);
 }
 
 SkeletonRenderer::SkeletonRenderer (const std::string& skeletonDataFile, const std::string& atlasFile, float scale) {
-    initWithFile(skeletonDataFile, atlasFile, scale);
+	initWithFile(skeletonDataFile, atlasFile, scale);
 }
 
 SkeletonRenderer::~SkeletonRenderer () {
-    if (_ownsSkeletonData) spSkeletonData_dispose(_skeleton->data);
-    if (_atlas) spAtlas_dispose(_atlas);
-    spSkeleton_dispose(_skeleton);
-    _batch->release();
-    FREE(_worldVertices);
+	if (_ownsSkeletonData) spSkeletonData_dispose(_skeleton->data);
+	if (_atlas) spAtlas_dispose(_atlas);
+	spSkeleton_dispose(_skeleton);
+	_batch->release();
+	FREE(_worldVertices);
 }
 
 void SkeletonRenderer::initWithData (spSkeletonData* skeletonData, bool ownsSkeletonData) {
-    setSkeletonData(skeletonData, ownsSkeletonData);
-    
-    initialize();
+	setSkeletonData(skeletonData, ownsSkeletonData);
+
+	initialize();
 }
 
 void SkeletonRenderer::initWithFile (const std::string& skeletonDataFile, spAtlas* atlas, float scale) {
-    spSkeletonJson* json = spSkeletonJson_create(atlas);
-    json->scale = scale;
-    spSkeletonData* skeletonData = spSkeletonJson_readSkeletonDataFile(json, skeletonDataFile.c_str());
-    CCASSERT(skeletonData, json->error ? json->error : "Error reading skeleton data.");
-    spSkeletonJson_dispose(json);
-    
-    setSkeletonData(skeletonData, true);
-    
-    initialize();
+	spSkeletonJson* json = spSkeletonJson_create(atlas);
+	json->scale = scale;
+	spSkeletonData* skeletonData = spSkeletonJson_readSkeletonDataFile(json, skeletonDataFile.c_str());
+	CCASSERT(skeletonData, json->error ? json->error : "Error reading skeleton data.");
+	spSkeletonJson_dispose(json);
+
+	setSkeletonData(skeletonData, true);
+
+	initialize();
 }
 
 void SkeletonRenderer::initWithFile (const std::string& skeletonDataFile, const std::string& atlasFile, float scale) {
-    _atlas = spAtlas_createFromFile(atlasFile.c_str(), 0);
-    CCASSERT(_atlas, "Error reading atlas file.");
-    
-    spSkeletonJson* json = spSkeletonJson_create(_atlas);
-    json->scale = scale;
-    spSkeletonData* skeletonData = spSkeletonJson_readSkeletonDataFile(json, skeletonDataFile.c_str());
-    CCASSERT(skeletonData, json->error ? json->error : "Error reading skeleton data file.");
-    spSkeletonJson_dispose(json);
-    
-    setSkeletonData(skeletonData, true);
-    
-    initialize();
+	_atlas = spAtlas_createFromFile(atlasFile.c_str(), 0);
+	CCASSERT(_atlas, "Error reading atlas file.");
+
+	spSkeletonJson* json = spSkeletonJson_create(_atlas);
+	json->scale = scale;
+	spSkeletonData* skeletonData = spSkeletonJson_readSkeletonDataFile(json, skeletonDataFile.c_str());
+	CCASSERT(skeletonData, json->error ? json->error : "Error reading skeleton data file.");
+	spSkeletonJson_dispose(json);
+
+	setSkeletonData(skeletonData, true);
+
+	initialize();
 }
+
 
 void SkeletonRenderer::update (float deltaTime) {
 	spSkeleton_update(_skeleton, deltaTime * _timeScale);
@@ -346,14 +346,20 @@ spSlot* SkeletonRenderer::findSlot (const std::string& slotName) const {
 }
 
 bool SkeletonRenderer::setSkin (const std::string& skinName) {
-	return spSkeleton_setSkinByName(_skeleton, skinName.c_str()) ? true : false;
+	return spSkeleton_setSkinByName(_skeleton, skinName.empty() ? 0 : skinName.c_str()) ? true : false;
+}
+bool SkeletonRenderer::setSkin (const char* skinName) {
+	return spSkeleton_setSkinByName(_skeleton, skinName) ? true : false;
 }
 
 spAttachment* SkeletonRenderer::getAttachment (const std::string& slotName, const std::string& attachmentName) const {
 	return spSkeleton_getAttachmentForSlotName(_skeleton, slotName.c_str(), attachmentName.c_str());
 }
 bool SkeletonRenderer::setAttachment (const std::string& slotName, const std::string& attachmentName) {
-	return spSkeleton_setAttachment(_skeleton, slotName.c_str(), attachmentName.c_str()) ? true : false;
+	return spSkeleton_setAttachment(_skeleton, slotName.c_str(), attachmentName.empty() ? 0 : attachmentName.c_str()) ? true : false;
+}
+bool SkeletonRenderer::setAttachment (const std::string& slotName, const char* attachmentName) {
+	return spSkeleton_setAttachment(_skeleton, slotName.c_str(), attachmentName) ? true : false;
 }
 
 spSkeleton* SkeletonRenderer::getSkeleton () {
@@ -379,6 +385,16 @@ void SkeletonRenderer::setDebugBonesEnabled (bool enabled) {
 }
 bool SkeletonRenderer::getDebugBonesEnabled () const {
 	return _debugBones;
+}
+
+void SkeletonRenderer::onEnter () {
+	Node::onEnter();
+	scheduleUpdate();
+}
+
+void SkeletonRenderer::onExit () {
+	Node::onExit();
+	unscheduleUpdate();
 }
 
 // --- CCBlendProtocol

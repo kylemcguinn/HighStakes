@@ -54,9 +54,9 @@ bool AppDelegate::applicationDidFinishLaunching()
     auto glview = director->getOpenGLView();
     if(!glview) {
 #if(CC_TARGET_PLATFORM == CC_PLATFORM_WP8) || (CC_TARGET_PLATFORM == CC_PLATFORM_WINRT)
-        glview = cocos2d::GLViewImpl::create("HighStakes");
+        glview = cocos2d::GLViewImpl::create("deleteProject");
 #else
-        glview = cocos2d::GLViewImpl::createWithRect("HighStakes", Rect(0,0,900,640));
+        glview = cocos2d::GLViewImpl::createWithRect("deleteProject", Rect(0,0,900,640));
 #endif
         director->setOpenGLView(glview);
 }
@@ -115,6 +115,9 @@ bool AppDelegate::applicationDidFinishLaunching()
 #endif
     sc->start();    
     sc->runScript("script/jsb_boot.js");
+#if defined(COCOS2D_DEBUG) && (COCOS2D_DEBUG > 0)
+    sc->enableDebugger();
+#endif
     ScriptEngineProtocol *engine = ScriptingCore::getInstance();
     ScriptEngineManager::getInstance()->setScriptEngine(engine);
     ScriptingCore::getInstance()->runScript("main.js");
