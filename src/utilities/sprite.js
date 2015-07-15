@@ -11,10 +11,10 @@ var SpriteUtility = {
             //onTouchBegan event callback function
             onTouchBegan: function (touch) {
                 var location = touch.getLocation();
-                var minX = sprite._position.x - sprite._contentSize.width / 2;
-                var maxX = sprite._position.x + sprite._contentSize.width / 2;
-                var minY = sprite._position.y - sprite._contentSize.height / 2;
-                var maxY = sprite._position.y + sprite._contentSize.height / 2;
+                var minX = sprite._position.x - sprite._contentSize.width * sprite._scaleX / 2;
+                var maxX = sprite._position.x + sprite._contentSize.width * sprite._scaleX / 2;
+                var minY = sprite._position.y - sprite._contentSize.height * sprite._scaleY / 2;
+                var maxY = sprite._position.y + sprite._contentSize.height * sprite._scaleY / 2;
 
                 if (location.x >= minX && location.x <= maxX
                     && location.y >= minY && location.y <= maxY) {

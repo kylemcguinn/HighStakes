@@ -4,6 +4,12 @@ var Dice = {
         var dice = new cc.Sprite("#dice1.png");
 
         var diceRoll = function(){
+
+            var numberOfActions = dice.getNumberOfRunningActions();
+
+            if (numberOfActions > 0)
+                return;
+
             var diceRoll = Math.floor((Math.random() * 6) + 1);
             var repeat = Math.floor((Math.random() * 5) + 3);
 
@@ -35,7 +41,7 @@ var Dice = {
         var rollDiceListener = cc.EventListener.create({
             event: cc.EventListener.CUSTOM,
             eventName: "game_roll_dice",
-            callback: function(event){
+            callback: function(){
                 diceRoll();
             }
         });
