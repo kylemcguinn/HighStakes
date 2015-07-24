@@ -1,5 +1,5 @@
 var Dice = {
-    getDice: function() {
+    getDice: function(layer) {
         cc.spriteFrameCache.addSpriteFrames(res.Dice_plist);
         var dice = new cc.Sprite("#dice1.png");
 
@@ -36,13 +36,29 @@ var Dice = {
             dice.runAction(cc.sequence(action1, action2));
         };
 
-        SpriteUtility.setTouchListener(dice, diceRoll);
+        SpriteUtility.setTouchListener(dice, function(){
+            if (!dice.highlight) {
+                dice.highlight = new cc.Sprite(res.DiceHightlight_png);
+                dice.highlight.attr({
+                    x: dice._position.x,
+                    y: dice._position.y
+                });
+
+                layer.addChild(dice.highlight, 10);
+            }
+            else{
+                layer.removeChild(dice.highlight);
+                dice.highlight = null;
+            }
+        });
 
         var rollDiceListener = cc.EventListener.create({
             event: cc.EventListener.CUSTOM,
             eventName: "game_roll_dice",
             callback: function(){
-                diceRoll();
+                if (!dice.highlight) {
+                    diceRoll();
+                }
             }
         });
         cc.eventManager.addListener(rollDiceListener, 1);

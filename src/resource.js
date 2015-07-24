@@ -8,7 +8,8 @@ var res = {
     Dice_background: "res/images/newvegasdice.jpeg",
     PlusButton_png: "res/images/add.png",
     Minus_png: "res/images/minus.png",
-    RollDice_png: "res/images/roll_die.png"
+    RollDice_png: "res/images/roll_die.png",
+    DiceHightlight_png: "res/images/DiceHighlight.png"
 };
 
 var g_resources = [];

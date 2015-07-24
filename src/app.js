@@ -73,7 +73,7 @@ var HelloWorldLayer = cc.Layer.extend({
         this.addChild(this.spriteSheet, 0);
 
         this.addDice = function(x, y) {
-            var newDie = Dice.getDice(this.spriteSheet);
+            var newDie = Dice.getDice(this);
             newDie.attr({x: x, y: y});
             dice.push(newDie);
             this.spriteSheet.addChild(newDie);
