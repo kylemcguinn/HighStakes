@@ -9,50 +9,29 @@ var HelloWorldLayer = cc.Layer.extend({
 
         // ask the window size
         var size = cc.winSize;
+        var self = this;
 
         GameManager.game = ThreesDice;
 
         var dice_x = 450;
         var diceSpace = 75;
-
         var dice = [];
+        var self = this;
 
-        var addDice = new cc.MenuItemImage(
-            res.PlusButton_png,
-            res.PlusButton_png,
+        var newGame = new cc.MenuItemImage(
+            res.NewGame_png,
+            res.NewGame_png,
             function () {
-                if (dice.length < 5) {
-                    dice_x += diceSpace;
-                    this.addDice(dice_x, 400);
-                }
+                this.destroyDice();
+                this.initializeDice();
             }, this);
-        addDice.attr({
-            x: size.width - 40,
-            y: 40,
-            scale:.5,
-            anchorX: 0.5,
-            anchorY: 0.5
-        });
-
-        var removeDice = new cc.MenuItemImage(
-            res.Minus_png,
-            res.Minus_png,
-            function () {
-                var die = dice.pop();
-                if(die) {
-                    this.spriteSheet.removeChild(die);
-                    dice_x -= diceSpace;
-                }
-            }, this);
-        removeDice .attr({
+        newGame.attr({
             x: size.width - 150,
-            y: 40,
-            scale:.5,
-            anchorX: 0.5,
-            anchorY: 0.5
+            y: 100,
+            scale:.5
         });
 
-        var menu = new cc.Menu(addDice,removeDice);
+        var menu = new cc.Menu(newGame);
         menu.x = 0;
         menu.y = 0;
         this.addChild(menu, 1);
@@ -81,10 +60,26 @@ var HelloWorldLayer = cc.Layer.extend({
             this.spriteSheet.addChild(newDie);
         };
 
-        for(var i = 0; i < GameManager.game.diceNum; ++i) {
-            this.addDice(dice_x, 400);
-            dice_x += diceSpace;
-        }
+        this.initializeDice = function(){
+            dice_x = 450;
+            dice = [];
+            for(var i = 0; i < GameManager.game.diceNum; ++i) {
+                this.addDice(dice_x, 400);
+                dice_x += diceSpace;
+            }
+        };
+        this.setScore = function(score){
+            scoreLabel.string = "Score: " + score;
+        };
+
+        this.destroyDice = function(){
+            ArrayUtility.forEach(dice, function(value){
+                self.removeChild(value.highlight);
+            });
+            this.setScore(0);
+        };
+
+        this.initializeDice();
 
         var rollDiceSprite = new cc.Sprite(res.RollDice_png);
         rollDiceSprite.attr({
@@ -125,7 +120,7 @@ var HelloWorldLayer = cc.Layer.extend({
                 });
                 var score = GameManager.game.calculateScore(diceValues);
 
-                scoreLabel.string = "Score: " + score;
+                self.setScore(score);
             }
         });
         cc.eventManager.addListener(rollCompletedListener, 1);

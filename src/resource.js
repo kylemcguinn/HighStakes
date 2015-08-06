@@ -9,6 +9,7 @@ var res = {
     PlusButton_png: "res/images/add.png",
     Minus_png: "res/images/minus.png",
     RollDice_png: "res/images/roll_die.png",
+    NewGame_png: "res/images/new_game.png",
     DiceHightlight_png: "res/images/DiceHighlight.png"
 };
 
