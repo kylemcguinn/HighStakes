@@ -10,6 +10,8 @@ var HelloWorldLayer = cc.Layer.extend({
         // ask the window size
         var size = cc.winSize;
 
+        GameManager.game = ThreesDice;
+
         var dice_x = 450;
         var diceSpace = 75;
 
@@ -79,21 +81,64 @@ var HelloWorldLayer = cc.Layer.extend({
             this.spriteSheet.addChild(newDie);
         };
 
-        this.addDice(dice_x, 400);
+        for(var i = 0; i < GameManager.game.diceNum; ++i) {
+            this.addDice(dice_x, 400);
+            dice_x += diceSpace;
+        }
 
-        var someSprite = new cc.Sprite(res.RollDice_png);
-        someSprite.attr({
+        var rollDiceSprite = new cc.Sprite(res.RollDice_png);
+        rollDiceSprite.attr({
             x: 200,
             y: 100,
             scale:.5
         });
 
-        SpriteUtility.setTouchListener(someSprite, function(){
+        SpriteUtility.setTouchListener(rollDiceSprite, function(){
+            var selectedCount = 0;
+            var diceCount = 0;
+            ArrayUtility.forEach(dice, function(value){
+                if (value.initialSelection){
+                    selectedCount++;
+                }
+                if (value.diceValue){
+                    diceCount++;
+                }
+            });
+
+            if (diceCount > 0 && GameManager.game.selectionMin && selectedCount < GameManager.game.selectionMin){
+                return;
+            }
+
             var event = new cc.EventCustom("game_roll_dice");
             cc.eventManager.dispatchEvent(event);
         });
 
-        this.addChild(someSprite, 5);
+        var rollCompletedListener = cc.EventListener.create({
+            event: cc.EventListener.CUSTOM,
+            eventName: "roll_completed",
+            callback: function(){
+                var diceValues = [];
+                ArrayUtility.forEach(dice, function(value){
+                    if (typeof value.diceValue !== undefined) {
+                        diceValues.push(value.diceValue);
+                    }
+                });
+                var score = GameManager.game.calculateScore(diceValues);
+
+                scoreLabel.string = "Score: " + score;
+            }
+        });
+        cc.eventManager.addListener(rollCompletedListener, 1);
+
+        this.addChild(rollDiceSprite, 5);
+
+        var scoreLabel = new cc.LabelTTF("Score: 0", "Verdana", 18);
+        scoreLabel.attr({
+            x: 200,
+            y: 160
+        });
+
+        this.addChild(scoreLabel, 5);
 
         return true;
     }

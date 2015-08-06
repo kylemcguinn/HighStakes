@@ -11,7 +11,10 @@ var Dice = {
                 return;
 
             var diceRoll = Math.floor((Math.random() * 6) + 1);
-            var repeat = Math.floor((Math.random() * 5) + 3);
+            //var repeat = Math.floor((Math.random() * 5) + 3);
+            var repeat = 1;
+
+            dice.diceValue = diceRoll == 1 ? 6 : diceRoll - 1;
 
             var animFrames = [];
             for (var i = 1; i < 7; i++) {
@@ -34,21 +37,27 @@ var Dice = {
             var action2 = new cc.Repeat(new cc.Animate(animation), 1);
 
             dice.runAction(cc.sequence(action1, action2));
+
+            var event = new cc.EventCustom("roll_completed");
+            cc.eventManager.dispatchEvent(event);
         };
 
         SpriteUtility.setTouchListener(dice, function(){
-            if (!dice.highlight) {
+            if (!dice.highlight && dice.diceValue) {
                 dice.highlight = new cc.Sprite(res.DiceHightlight_png);
                 dice.highlight.attr({
                     x: dice._position.x,
                     y: dice._position.y
                 });
 
+                dice.initialSelection = true;
+
                 layer.addChild(dice.highlight, 10);
             }
-            else{
+            else if (!dice.selectionLocked){
                 layer.removeChild(dice.highlight);
                 dice.highlight = null;
+                dice.initialSelection = false;
             }
         });
 
@@ -58,6 +67,10 @@ var Dice = {
             callback: function(){
                 if (!dice.highlight) {
                     diceRoll();
+                }
+                else if (GameManager.game.canDeselect == false){
+                    dice.initialSelection = false;
+                    dice.selectionLocked = true;
                 }
             }
         });
