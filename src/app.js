@@ -26,7 +26,7 @@ var HelloWorldLayer = cc.Layer.extend({
                 this.initializeDice();
             }, this);
         newGame.attr({
-            x: size.width - 150,
+            x: size.width - 200,
             y: 100,
             scale:.5
         });
