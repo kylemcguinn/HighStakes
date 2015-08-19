@@ -12,11 +12,10 @@ var HelloWorldLayer = cc.Layer.extend({
         var self = this;
 
         GameManager.game = ThreesDice;
+        GameManager.dice = [];
 
         var dice_x = 450;
         var diceSpace = 75;
-        var dice = [];
-        var self = this;
 
         var newGame = new cc.MenuItemImage(
             res.NewGame_png,
@@ -56,13 +55,13 @@ var HelloWorldLayer = cc.Layer.extend({
         this.addDice = function(x, y) {
             var newDie = Dice.getDice(this);
             newDie.attr({x: x, y: y});
-            dice.push(newDie);
+            GameManager.dice.push(newDie);
             this.spriteSheet.addChild(newDie);
         };
 
         this.initializeDice = function(){
             dice_x = 450;
-            dice = [];
+            GameManager.dice = [];
             for(var i = 0; i < GameManager.game.diceNum; ++i) {
                 this.addDice(dice_x, 400);
                 dice_x += diceSpace;
@@ -73,7 +72,7 @@ var HelloWorldLayer = cc.Layer.extend({
         };
 
         this.destroyDice = function(){
-            ArrayUtility.forEach(dice, function(value){
+            ArrayUtility.forEach(GameManager.dice, function(value){
                 self.removeChild(value.highlight);
             });
             this.setScore(0);
@@ -89,23 +88,7 @@ var HelloWorldLayer = cc.Layer.extend({
         });
 
         SpriteUtility.setTouchListener(rollDiceSprite, function(){
-            var selectedCount = 0;
-            var diceCount = 0;
-            ArrayUtility.forEach(dice, function(value){
-                if (value.initialSelection){
-                    selectedCount++;
-                }
-                if (value.diceValue){
-                    diceCount++;
-                }
-            });
-
-            if (diceCount > 0 && GameManager.game.selectionMin && selectedCount < GameManager.game.selectionMin){
-                return;
-            }
-
-            var event = new cc.EventCustom("game_roll_dice");
-            cc.eventManager.dispatchEvent(event);
+            GameManager.rollDice();
         });
 
         var rollCompletedListener = cc.EventListener.create({
@@ -113,7 +96,7 @@ var HelloWorldLayer = cc.Layer.extend({
             eventName: "roll_completed",
             callback: function(){
                 var diceValues = [];
-                ArrayUtility.forEach(dice, function(value){
+                ArrayUtility.forEach(GameManager.dice, function(value){
                     if (typeof value.diceValue !== undefined) {
                         diceValues.push(value.diceValue);
                     }
