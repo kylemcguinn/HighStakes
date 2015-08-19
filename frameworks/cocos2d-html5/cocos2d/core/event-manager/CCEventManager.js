@@ -313,8 +313,10 @@ cc.eventManager = /** @lends cc.eventManager# */{
     _sortEventListenersOfSceneGraphPriorityDes : function(l1, l2){
         var locNodePriorityMap = cc.eventManager._nodePriorityMap, node1 = l1._getSceneGraphPriority(),
             node2 = l2._getSceneGraphPriority();
-        if(!l1 || !l2 || !node1 || !node2 || !locNodePriorityMap[node1.__instanceId] || !locNodePriorityMap[node2.__instanceId])
+        if( !l2 || !node2 || !locNodePriorityMap[node2.__instanceId] )
             return -1;
+        else if( !l1 || !node1 || !locNodePriorityMap[node1.__instanceId] )
+            return 1;
         return locNodePriorityMap[l2._getSceneGraphPriority().__instanceId] - locNodePriorityMap[l1._getSceneGraphPriority().__instanceId];
     },
 
@@ -743,6 +745,27 @@ cc.eventManager = /** @lends cc.eventManager# */{
                 }
             }
         }
+    },
+
+    _removeListenerInCallback: function(listeners, callback){
+        if (listeners == null)
+            return false;
+
+        for (var i = 0, len = listeners.length; i < len; i++) {
+            var selListener = listeners[i];
+            if (selListener._onCustomEvent === callback || selListener._onEvent === callback) {
+                selListener._setRegistered(false);
+                if (selListener._getSceneGraphPriority() != null){
+                    this._dissociateNodeAndEventListener(selListener._getSceneGraphPriority(), selListener);
+                    selListener._setSceneGraphPriority(null);         // NULL out the node pointer so we don't have any dangling pointers to destroyed nodes.
+                }
+
+                if (this._inDispatch === 0)
+                    cc.arrayRemoveObject(listeners, selListener);
+                return true;
+            }
+        }
+        return false;
     },
 
     _removeListenerInVector : function(listeners, listener){

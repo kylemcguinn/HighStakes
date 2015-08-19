@@ -121,6 +121,8 @@
 
         node.setCascadeColorEnabled(true);
         node.setCascadeOpacityEnabled(true);
+
+        setLayoutComponent(node, json);
     };
 
     parser.parseChild = function(node, children, resourcePath){
@@ -159,6 +161,9 @@
         var node = new cc.Node();
 
         this.generalAttributes(node, json);
+        var color = json["CColor"];
+        if(color != null)
+            node.setColor(getColor(color));
 
         return node;
     };
@@ -177,7 +182,8 @@
                 node.setTexture(path);
             else if(type === 1){
                 var spriteFrame = cc.spriteFrameCache.getSpriteFrame(path);
-                node.setSpriteFrame(spriteFrame);
+                if(spriteFrame)
+                    node.setSpriteFrame(spriteFrame);
             }
         });
 
@@ -327,12 +333,17 @@
         if (color != null)
             widget.setColor(getColor(color));
 
+        setLayoutComponent(widget, json);
+    };
+
+    var setLayoutComponent = function(widget, json){
+
         var layoutComponent = ccui.LayoutComponent.bindLayoutComponent(widget);
         if(!layoutComponent)
             return;
 
-        var positionXPercentEnabled = json["PositionPercentXEnable"] || false;
-        var positionYPercentEnabled = json["PositionPercentYEnable"] || false;
+        var positionXPercentEnabled = json["PositionPercentXEnable"] || json["PositionPercentXEnabled"] || false;
+        var positionYPercentEnabled = json["PositionPercentYEnable"] || json["PositionPercentYEnabled"] || false;
         var positionXPercent = 0,
             positionYPercent = 0,
             PrePosition = json["PrePosition"];
@@ -340,8 +351,8 @@
             positionXPercent = PrePosition["X"] || 0;
             positionYPercent = PrePosition["Y"] || 0;
         }
-        var sizeXPercentEnable = json["PercentWidthEnable"] || false;
-        var sizeYPercentEnable = json["PercentHeightEnable"] || false;
+        var sizeXPercentEnable = json["PercentWidthEnable"] || json["PercentWidthEnabled"]  || false;
+        var sizeYPercentEnable = json["PercentHeightEnable"]|| json["PercentHeightEnabled"]  || false;
         var sizeXPercent = 0,
             sizeYPercent = 0,
             PreSize = json["PreSize"];
@@ -366,6 +377,7 @@
         layoutComponent.setPercentHeightEnabled(sizeYPercentEnable);
         layoutComponent.setPercentWidth(sizeXPercent);
         layoutComponent.setPercentHeight(sizeYPercent);
+        layoutComponent.setPercentWidthEnabled(sizeXPercentEnable || sizeYPercentEnable);
         layoutComponent.setStretchWidthEnabled(stretchHorizontalEnabled);
         layoutComponent.setStretchHeightEnabled(stretchVerticalEnabled);
 
@@ -539,7 +551,7 @@
                 if (cc.sys.isNative) {
                     fontName = cc.path.join(cc.loader.resPath, resourcePath, path);
                 } else {
-                    fontName = path.match(/([^\/]+)\.ttf/);
+                    fontName = path.match(/([^\/]+)\.(\S+)/);
                     fontName = fontName ? fontName[1] : "";
                 }
                 widget.setFontName(fontName);
@@ -562,8 +574,11 @@
 
         widget.setUnifySizeEnabled(false);
 
+        var color = json["CColor"];
+        json["CColor"] = null;
+        widget.setTextColor(getColor(color));
         this.widgetAttributes(widget, json, widget.isIgnoreContentAdaptWithSize());
-
+        json["CColor"] = color;
         return widget;
 
     };
@@ -620,7 +635,7 @@
                 if (cc.sys.isNative) {
                     fontName = cc.path.join(cc.loader.resPath, resourcePath, path);
                 } else {
-                    fontName = path.match(/([^\/]+)\.ttf/);
+                    fontName = path.match(/([^\/]+)\.(\S+)/);
                     fontName = fontName ? fontName[1] : "";
                 }
                 widget.setTitleFontName(fontName);
@@ -1095,7 +1110,7 @@
                 if (cc.sys.isNative) {
                     fontName = cc.path.join(cc.loader.resPath, resourcePath, path);
                 } else {
-                    fontName = path.match(/([^\/]+)\.ttf/);
+                    fontName = path.match(/([^\/]+)\.(\S+)/);
                     fontName = fontName ? fontName[1] : "";
                 }
                 widget.setFontName(fontName);
@@ -1131,13 +1146,10 @@
         var volume = json["Volume"] || 0;
         cc.audioEngine.setMusicVolume(volume);
         //var name = json["Name"];
-        var resPath = "";
-        if(cc.loader.resPath)
-            resPath = (cc.loader.resPath + "/").replace(/\/\/$/, "/");
 
         loadTexture(json["FileData"], resourcePath, function(path, type){
             cc.loader.load(path, function(){
-                cc.audioEngine.playMusic(resPath + path, loop);
+                cc.audioEngine.playMusic(path, loop);
             });
         });
 
@@ -1214,8 +1226,6 @@
 
         var currentAnimationName = json["CurrentAnimationName"];
 
-        parser.generalAttributes(node, json);
-
         loadTexture(json["FileData"], resourcePath, function(path, type){
             var plists, pngs;
             var armJson = cc.loader.getRes(path);
@@ -1233,8 +1243,16 @@
             node.init(getFileName(path));
             if(isAutoPlay)
                 node.getAnimation().play(currentAnimationName, -1, isLoop);
+            else{
+                node.getAnimation().play(currentAnimationName);
+                node.getAnimation().gotoAndPause(0);
+            }
 
         });
+
+        parser.generalAttributes(node, json);
+
+        node.setColor(getColor(json["CColor"]));
         return node;
     };
 
@@ -1253,13 +1271,16 @@
                     loadedPlist[resourcePath + plist] = true;
                     cc.spriteFrameCache.addSpriteFrames(resourcePath + plist);
                 }else{
-                    if(!loadedPlist[resourcePath + plist])
+                    if(!loadedPlist[resourcePath + plist] && !cc.spriteFrameCache.getSpriteFrame(path))
                         cc.log("%s need to be preloaded", resourcePath + plist);
                 }
             }
-            if(type !== 0)
-                cb(path, type);
-            else
+            if(type !== 0){
+                if(cc.spriteFrameCache.getSpriteFrame(path))
+                    cb(path, type);
+                else
+                    cc.log("failed to get spriteFrame: %s", path);
+            }else
                 cb(resourcePath + path, type);
         }
     };
