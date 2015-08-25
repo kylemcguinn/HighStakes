@@ -116,6 +116,12 @@ var HelloWorldLayer = cc.Layer.extend({
             y: 160
         });
 
+        var gameLabel = new cc.LabelTTF(GameManager.game.name, "Verdana", 28);
+        gameLabel.attr({
+            x: 200,
+            y: 400
+        });
+
         this.addChild(scoreLabel, 5);
 
         return true;

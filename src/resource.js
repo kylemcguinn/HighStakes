@@ -4,6 +4,7 @@ var res = {
     CloseSelected_png : "res/CloseSelected.png",
     Dice_jpg : "res/images/dice.jpg",
     Dice_png : "res/images/dice.png",
+    DiceGreen_png : "res/images/diceGreen.png",
     Dice_plist: "res/images/dice.plist",
     Dice_background: "res/images/newvegasdice.jpeg",
     PlusButton_png: "res/images/add.png",

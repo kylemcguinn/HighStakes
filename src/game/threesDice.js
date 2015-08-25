@@ -2,6 +2,7 @@
  * Created by Kyle on 8/3/2015.
  */
 var ThreesDice = {
+    name: 'Threes Dice',
     diceNum: 5,
     maxRolls: 5,
     canDeselect: false,

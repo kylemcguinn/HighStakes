@@ -18,7 +18,7 @@ var Dice = {
 
             var animFrames = [];
             for (var i = 1; i < 7; i++) {
-                var str = "dice" + i + ".png";
+                var str = "diceGreen" + i + ".png";
                 var frame = cc.spriteFrameCache.getSpriteFrame(str);
                 animFrames.push(frame);
             }
@@ -28,7 +28,7 @@ var Dice = {
 
             animFrames = [];
             for (i = 1; i < diceRoll; i++) {
-                str = "dice" + i + ".png";
+                str = "diceGreen" + i + ".png";
                 frame = cc.spriteFrameCache.getSpriteFrame(str);
                 animFrames.push(frame);
             }
