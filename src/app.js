@@ -12,7 +12,22 @@ var HelloWorldLayer = cc.Layer.extend({
         var self = this;
 
         GameManager.game = ThreesDice;
-        GameManager.dice = [];
+        GameManager.players = [
+            {
+                dice: [],
+                diceSet: {
+                    name: "dice",
+                    resource: res.Dice_plist
+                }
+            },
+            {
+                dice: [],
+                diceSet: {
+                    name: "diceGreen",
+                    resource: res.DiceGreen_plist
+                }
+            }
+        ];
 
         var dice_x = 450;
         var diceSpace = 75;
@@ -52,19 +67,21 @@ var HelloWorldLayer = cc.Layer.extend({
         });
         this.addChild(this.spriteSheet, 0);
 
-        this.addDice = function(x, y) {
-            var newDie = Dice.getDice(this);
+        this.addPlayerDice = function(x, y, player) {
+            var newDie = Dice.getDice(this, player.diceSet);
             newDie.attr({x: x, y: y});
-            GameManager.dice.push(newDie);
+            player.dice.push(newDie);
             this.spriteSheet.addChild(newDie);
         };
 
         this.initializeDice = function(){
-            dice_x = 450;
-            GameManager.dice = [];
-            for(var i = 0; i < GameManager.game.diceNum; ++i) {
-                this.addDice(dice_x, 400);
-                dice_x += diceSpace;
+            for(var j = 0; j < GameManager.players.length; j++) {
+                GameManager.players[j].dice = [];
+                dice_x = 450;
+                for (var i = 0; i < GameManager.game.diceNum; ++i) {
+                    this.addPlayerDice(dice_x, 400 + j * 100, GameManager.players[j]);
+                    dice_x += diceSpace;
+                }
             }
         };
         this.setScore = function(score){
@@ -72,7 +89,7 @@ var HelloWorldLayer = cc.Layer.extend({
         };
 
         this.destroyDice = function(){
-            ArrayUtility.forEach(GameManager.dice, function(value){
+            ArrayUtility.forEach(GameManager.players[0].dice, function(value){
                 self.removeChild(value.highlight);
             });
             this.setScore(0);
@@ -88,7 +105,7 @@ var HelloWorldLayer = cc.Layer.extend({
         });
 
         SpriteUtility.setTouchListener(rollDiceSprite, function(){
-            GameManager.rollDice();
+            GameManager.rollDice(GameManager.players[0]);
         });
 
         var rollCompletedListener = cc.EventListener.create({
@@ -96,7 +113,7 @@ var HelloWorldLayer = cc.Layer.extend({
             eventName: "roll_completed",
             callback: function(){
                 var diceValues = [];
-                ArrayUtility.forEach(GameManager.dice, function(value){
+                ArrayUtility.forEach(GameManager.players[0].dice, function(value){
                     if (typeof value.diceValue !== undefined) {
                         diceValues.push(value.diceValue);
                     }

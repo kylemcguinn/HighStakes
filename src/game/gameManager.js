@@ -3,11 +3,11 @@
  */
 var GameManager = {
     game: null,
-    dice: [],
-    rollDice: function(){
+    players: [],
+    rollDice: function(player){
         var selectedCount = 0;
         var diceCount = 0;
-        ArrayUtility.forEach(this.dice, function(value){
+        ArrayUtility.forEach(player.dice, function(value){
             if (value.initialSelection){
                 selectedCount++;
             }

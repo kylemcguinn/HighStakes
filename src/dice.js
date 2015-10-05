@@ -1,7 +1,8 @@
 var Dice = {
-    getDice: function(layer) {
-        cc.spriteFrameCache.addSpriteFrames(res.Dice_plist);
-        var dice = new cc.Sprite("#dice1.png");
+    getDice: function(layer, diceSet) {
+        cc.spriteFrameCache.addSpriteFrames(diceSet.resource);
+
+        var dice = new cc.Sprite("#" + diceSet.name + "1.png");
 
         var diceRoll = function(){
 
@@ -18,7 +19,7 @@ var Dice = {
 
             var animFrames = [];
             for (var i = 1; i < 7; i++) {
-                var str = "dice" + i + ".png";
+                var str = diceSet.name + i + ".png";
                 var frame = cc.spriteFrameCache.getSpriteFrame(str);
                 animFrames.push(frame);
             }
@@ -28,7 +29,7 @@ var Dice = {
 
             animFrames = [];
             for (i = 1; i < diceRoll; i++) {
-                str = "dice" + i + ".png";
+                str = diceSet.name + i + ".png";
                 frame = cc.spriteFrameCache.getSpriteFrame(str);
                 animFrames.push(frame);
             }
