@@ -82,6 +82,84 @@
                 <key>sourceSize</key>
                 <string>{64,64}</string>
             </dict>
+            <key>diceGreen1.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{398,2},{64,64}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{2,2},{64,64}}</string>
+                <key>sourceSize</key>
+                <string>{68,68}</string>
+            </dict>
+            <key>diceGreen2.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{464,2},{64,64}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{2,2},{64,64}}</string>
+                <key>sourceSize</key>
+                <string>{68,68}</string>
+            </dict>
+            <key>diceGreen3.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{530,2},{64,64}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{2,2},{64,64}}</string>
+                <key>sourceSize</key>
+                <string>{68,68}</string>
+            </dict>
+            <key>diceGreen4.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{596,2},{64,64}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{2,2},{64,64}}</string>
+                <key>sourceSize</key>
+                <string>{68,68}</string>
+            </dict>
+            <key>diceGreen5.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{662,2},{64,64}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{2,2},{64,64}}</string>
+                <key>sourceSize</key>
+                <string>{68,68}</string>
+            </dict>
+            <key>diceGreen6.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{728,2},{64,64}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{2,2},{64,64}}</string>
+                <key>sourceSize</key>
+                <string>{68,68}</string>
+            </dict>
         </dict>
         <key>metadata</key>
         <dict>
@@ -90,9 +168,9 @@
             <key>realTextureFileName</key>
             <string>dice.png</string>
             <key>size</key>
-            <string>{398,68}</string>
+            <string>{794,68}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:181bf27492031b01b9bde957225faa3b:3356710bf7873bc54b69c1229945e7a3:544c64e63d0b9630b74f34aa38307e54$</string>
+            <string>$TexturePacker:SmartUpdate:63a7b4b02304d9ea5ea855bfe06669c7:6c190662b3dc58b9bb105092d2293e76:544c64e63d0b9630b74f34aa38307e54$</string>
             <key>textureFileName</key>
             <string>dice.png</string>
         </dict>

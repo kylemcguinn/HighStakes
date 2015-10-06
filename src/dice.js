@@ -1,7 +1,5 @@
 var Dice = {
     getDice: function(layer, diceSet) {
-        cc.spriteFrameCache.addSpriteFrames(diceSet.resource);
-
         var dice = new cc.Sprite("#" + diceSet.name + "1.png");
 
         var diceRoll = function(){

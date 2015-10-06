@@ -11,20 +11,21 @@ var HelloWorldLayer = cc.Layer.extend({
         var size = cc.winSize;
         var self = this;
 
+        // add dice resources
+        cc.spriteFrameCache.addSpriteFrames(res.Dice_plist);
+
         GameManager.game = ThreesDice;
         GameManager.players = [
             {
                 dice: [],
                 diceSet: {
-                    name: "dice",
-                    resource: res.Dice_plist
+                    name: "dice"
                 }
             },
             {
                 dice: [],
                 diceSet: {
-                    name: "diceGreen",
-                    resource: res.DiceGreen_plist
+                    name: "diceGreen"
                 }
             }
         ];
@@ -79,7 +80,7 @@ var HelloWorldLayer = cc.Layer.extend({
                 GameManager.players[j].dice = [];
                 dice_x = 450;
                 for (var i = 0; i < GameManager.game.diceNum; ++i) {
-                    this.addPlayerDice(dice_x, 400 + j * 100, GameManager.players[j]);
+                    this.addPlayerDice(dice_x, 400 - j * 100, GameManager.players[j]);
                     dice_x += diceSpace;
                 }
             }
