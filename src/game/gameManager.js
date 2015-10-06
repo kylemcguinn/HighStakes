@@ -16,11 +16,20 @@ var GameManager = {
             }
         });
 
-        if (diceCount > 0 && this.game.selectionMin && selectedCount < this.game.selectionMin){
-            return;
-        }
+        var canRoll = !(diceCount > 0 && this.game.selectionMin && selectedCount < this.game.selectionMin);
 
-        var event = new cc.EventCustom("game_roll_dice");
-        cc.eventManager.dispatchEvent(event);
+        var diceValues = [];
+
+        ArrayUtility.forEach(player.dice, function(value){
+            if (canRoll) {
+                value.rollDice();
+            }
+
+            diceValues.push(value.diceValue);
+        });
+
+        var score = GameManager.game.calculateScore(diceValues);
+
+        return score;
     }
 };

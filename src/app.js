@@ -106,25 +106,9 @@ var HelloWorldLayer = cc.Layer.extend({
         });
 
         SpriteUtility.setTouchListener(rollDiceSprite, function(){
-            GameManager.rollDice(GameManager.players[0]);
+            var score = GameManager.rollDice(GameManager.players[0]);
+            self.setScore(score);
         });
-
-        var rollCompletedListener = cc.EventListener.create({
-            event: cc.EventListener.CUSTOM,
-            eventName: "roll_completed",
-            callback: function(){
-                var diceValues = [];
-                ArrayUtility.forEach(GameManager.players[0].dice, function(value){
-                    if (typeof value.diceValue !== undefined) {
-                        diceValues.push(value.diceValue);
-                    }
-                });
-                var score = GameManager.game.calculateScore(diceValues);
-
-                self.setScore(score);
-            }
-        });
-        cc.eventManager.addListener(rollCompletedListener, 1);
 
         this.addChild(rollDiceSprite, 5);
 

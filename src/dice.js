@@ -36,9 +36,6 @@ var Dice = {
             var action2 = new cc.Repeat(new cc.Animate(animation), 1);
 
             dice.runAction(cc.sequence(action1, action2));
-
-            var event = new cc.EventCustom("roll_completed");
-            cc.eventManager.dispatchEvent(event);
         };
 
         SpriteUtility.setTouchListener(dice, function(){
@@ -60,20 +57,15 @@ var Dice = {
             }
         });
 
-        var rollDiceListener = cc.EventListener.create({
-            event: cc.EventListener.CUSTOM,
-            eventName: "game_roll_dice",
-            callback: function(){
-                if (!dice.highlight) {
-                    diceRoll();
-                }
-                else if (GameManager.game.canDeselect == false){
-                    dice.initialSelection = false;
-                    dice.selectionLocked = true;
-                }
+        dice.rollDice = function(){
+            if (!dice.highlight) {
+                diceRoll();
             }
-        });
-        cc.eventManager.addListener(rollDiceListener, 1);
+            else if (GameManager.game.canDeselect == false){
+                dice.initialSelection = false;
+                dice.selectionLocked = true;
+            }
+        };
 
         return dice;
     }
