@@ -1,6 +1,6 @@
 var Dice = {
     getDice: function(layer, diceSet) {
-        var dice = new cc.Sprite("#" + diceSet.name + "1.png");
+        var dice = new cc.Sprite("#" + diceSet + "1.png");
 
         var diceRoll = function(){
 
@@ -17,7 +17,7 @@ var Dice = {
 
             var animFrames = [];
             for (var i = 1; i < 7; i++) {
-                var str = diceSet.name + i + ".png";
+                var str = diceSet + i + ".png";
                 var frame = cc.spriteFrameCache.getSpriteFrame(str);
                 animFrames.push(frame);
             }
@@ -27,7 +27,7 @@ var Dice = {
 
             animFrames = [];
             for (i = 1; i < diceRoll; i++) {
-                str = diceSet.name + i + ".png";
+                str = diceSet + i + ".png";
                 frame = cc.spriteFrameCache.getSpriteFrame(str);
                 animFrames.push(frame);
             }
@@ -40,15 +40,7 @@ var Dice = {
 
         SpriteUtility.setTouchListener(dice, function(){
             if (!dice.highlight && dice.diceValue) {
-                dice.highlight = new cc.Sprite(res.DiceHightlight_png);
-                dice.highlight.attr({
-                    x: dice._position.x,
-                    y: dice._position.y
-                });
-
-                dice.initialSelection = true;
-
-                layer.addChild(dice.highlight, 10);
+                dice.setHightlighted();
             }
             else if (!dice.selectionLocked){
                 layer.removeChild(dice.highlight);
@@ -56,6 +48,18 @@ var Dice = {
                 dice.initialSelection = false;
             }
         });
+
+        dice.setHightlighted = function(){
+            dice.highlight = new cc.Sprite(res.DiceHightlight_png);
+            dice.highlight.attr({
+                x: dice._position.x,
+                y: dice._position.y
+            });
+
+            dice.initialSelection = true;
+
+            layer.addChild(dice.highlight, 10);
+        };
 
         dice.rollDice = function(){
             if (!dice.highlight) {

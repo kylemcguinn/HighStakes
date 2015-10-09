@@ -11,7 +11,8 @@ var res = {
     PlusButton_png: "res/images/add.png",
     Minus_png: "res/images/minus.png",
     RollDice_png: "res/images/roll_die.png",
-    NewGame_png: "res/images/new_game.png",
+    NewGame_png: "res/images/newButton.png",
+    EndTurn_png: "res/images/endTurnButton.png",
     DiceHightlight_png: "res/images/DiceHighlight.png"
 };
 

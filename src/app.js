@@ -18,15 +18,11 @@ var HelloWorldLayer = cc.Layer.extend({
         GameManager.players = [
             {
                 dice: [],
-                diceSet: {
-                    name: "dice"
-                }
+                diceSet: "dice"
             },
             {
                 dice: [],
-                diceSet: {
-                    name: "diceGreen"
-                }
+                diceSet:"diceGreen"
             }
         ];
 
@@ -41,12 +37,24 @@ var HelloWorldLayer = cc.Layer.extend({
                 this.initializeDice();
             }, this);
         newGame.attr({
-            x: size.width - 200,
+            x: size.width - 125,
             y: 100,
             scale:.5
         });
 
-        var menu = new cc.Menu(newGame);
+        var endTurn = new cc.MenuItemImage(
+            res.EndTurn_png,
+            res.EndTurn_png,
+            function () {
+                GameManager.nextTurn(GameManager.players[1]);
+            }, this);
+        endTurn.attr({
+            x: size.width - 350,
+            y: 100,
+            scale:.5
+        });
+
+        var menu = new cc.Menu(newGame, endTurn);
         menu.x = 0;
         menu.y = 0;
         this.addChild(menu, 1);
