@@ -18,11 +18,13 @@ var HelloWorldLayer = cc.Layer.extend({
         GameManager.players = [
             {
                 dice: [],
-                diceSet: "dice"
+                diceSet: "dice",
+                score: 0
             },
             {
                 dice: [],
-                diceSet:"diceGreen"
+                diceSet:"diceGreen",
+                score: 0
             }
         ];
 
@@ -35,6 +37,8 @@ var HelloWorldLayer = cc.Layer.extend({
             function () {
                 this.destroyDice();
                 this.initializeDice();
+                this.initializePlayers();
+                self.updateScore();
             }, this);
         newGame.attr({
             x: size.width - 125,
@@ -82,7 +86,6 @@ var HelloWorldLayer = cc.Layer.extend({
             player.dice.push(newDie);
             this.spriteSheet.addChild(newDie);
         };
-
         this.initializeDice = function(){
             for(var j = 0; j < GameManager.players.length; j++) {
                 GameManager.players[j].dice = [];
@@ -93,18 +96,44 @@ var HelloWorldLayer = cc.Layer.extend({
                 }
             }
         };
-        this.setScore = function(score){
-            scoreLabel.string = "Score: " + score;
+        this.initializeScores = function(){
+            self.scores = [];
+
+            ArrayUtility.forEach(GameManager.players, function(player, index) {
+
+                var scoreLabel = new cc.LabelTTF("Score: 0", "Verdana", 18);
+                scoreLabel.attr({
+                    x: 350,
+                    y: 400 - index * 100
+                });
+
+                self.addChild(scoreLabel, 5);
+
+                self.scores.push(scoreLabel);
+            });
+        };
+        this.initializePlayers = function(){
+            ArrayUtility.forEach(GameManager.players, function(player, index) {
+                player.score = 0;
+            });
+        };
+
+        this.updateScore = function(score){
+            ArrayUtility.forEach(GameManager.players, function(player, index) {
+                self.scores[index].string = "Score: " + player.score;
+            });
         };
 
         this.destroyDice = function(){
-            ArrayUtility.forEach(GameManager.players[0].dice, function(value){
-                self.removeChild(value.highlight);
+            ArrayUtility.forEach(GameManager.players, function(player) {
+                ArrayUtility.forEach(player.dice, function (value) {
+                    self.removeChild(value.highlight);
+                });
             });
-            this.setScore(0);
         };
 
         this.initializeDice();
+        this.initializeScores();
 
         var rollDiceSprite = new cc.Sprite(res.RollDice_png);
         rollDiceSprite.attr({
@@ -114,25 +143,27 @@ var HelloWorldLayer = cc.Layer.extend({
         });
 
         SpriteUtility.setTouchListener(rollDiceSprite, function(){
-            var score = GameManager.rollDice(GameManager.players[0]);
-            self.setScore(score);
+            GameManager.rollDice(GameManager.players[0]);
         });
 
         this.addChild(rollDiceSprite, 5);
 
-        var scoreLabel = new cc.LabelTTF("Score: 0", "Verdana", 18);
-        scoreLabel.attr({
-            x: 200,
-            y: 160
-        });
-
         var gameLabel = new cc.LabelTTF(GameManager.game.name, "Verdana", 28);
         gameLabel.attr({
-            x: 200,
-            y: 400
+            x: 150,
+            y: 350
         });
 
-        this.addChild(scoreLabel, 5);
+        this.addChild(gameLabel, 5);
+
+        var updateScoreListener = cc.EventListener.create({
+            event: cc.EventListener.CUSTOM,
+            eventName: "update_score",
+            callback: function(){
+                self.updateScore();
+            }
+        });
+        cc.eventManager.addListener(updateScoreListener, 1);
 
         return true;
     }

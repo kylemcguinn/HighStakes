@@ -5,7 +5,7 @@ var GameManager = {
     game: null,
     players: [],
     rollDice: function(player){
-        return this.game.rollDice(player);
+        this.game.rollDice(player);
     },
     nextTurn: function(player){
         return this.game.computerTurn(player);
