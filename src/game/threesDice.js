@@ -46,30 +46,36 @@ var ThreesDice = {
             }
         });
 
-        waitForDice(player.dice, function(){
+        waitForDice(player.dice, 500).then(function(){
             self.calculateScore(player);
             var event = new cc.EventCustom("update_score");
             cc.eventManager.dispatchEvent(event);
-        }, 500);
+        });
     }
 };
 
-var waitForDice = function(dice, callback, timeout){
-    var isDone = true;
-    ArrayUtility.forEach(dice, function(value){
-        if (value.getNumberOfRunningActions() > 0){
-            isDone = false;
+var waitForDice = function(dice, timeout){
+    var promise = new Promise(function(resolve, reject) {
+        var isDone = true;
+        ArrayUtility.forEach(dice, function (value) {
+            if (value.getNumberOfRunningActions() > 0) {
+                isDone = false;
+            }
+        });
+
+        if (isDone) {
+            resolve();
+        }
+        else {
+            setTimeout(function () {
+                waitForDice(dice, timeout).then(function(){
+                    resolve();
+                });
+            }, timeout);
         }
     });
 
-    if (isDone){
-        callback();
-    }
-    else{
-        setTimeout(function(){
-            waitForDice(dice, callback);
-        }, timeout);
-    }
+    return promise;
 };
 
 var selectDice = function(game, player){
@@ -104,9 +110,9 @@ var selectDice = function(game, player){
 var rollCpuDice = function(game, player){
     game.rollDice(player);
 
-    waitForDice(player.dice, function() {
+    waitForDice(player.dice, 1000).then(function() {
         setTimeout(function(){
-            selectDice(game, player, 1000);
-        }, 1000);
+            selectDice(game, player);
+        });
     });
 };
